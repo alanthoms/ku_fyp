@@ -13,13 +13,20 @@ const MovieRecommendations = ({ movieId }) => {
   }, [movieId]);
 
   return (
-    <div className="p-4">
-      <h2>Recommended Movies</h2>
-      <ul>
+    <div>
+      <h2>🎥 Recommended Movies</h2>
+      <div className="movie-list">
         {recommendations.map((movie) => (
-          <li key={movie.id}>{movie.title}</li>
+          <div key={movie.id} className="movie-card">
+            {movie.poster ? (
+              <img src={movie.poster} alt={movie.title} className="movie-poster" />
+            ) : (
+              <div className="no-poster">No Image</div>
+            )}
+            <p>{movie.title}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

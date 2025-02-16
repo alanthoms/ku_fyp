@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const TMDB_API_KEY = process.env.TMDB_API_KEY; // Store API key in .env file
+const TMDB_API_KEY = process.env.TMDB_API_KEY; // Your TMDB API Key
+const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"; // Image URL for posters
 
 // Movie search endpoint
 app.get("/search/:movie", async (req, res) => {
@@ -16,7 +17,14 @@ app.get("/search/:movie", async (req, res) => {
     const response = await axios.get(
       `https://api.themoviedb.org/3/search/movie?query=${movieName}&api_key=${TMDB_API_KEY}`
     );
-    res.json(response.data.results);
+
+    const movies = response.data.results.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster_path ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : null
+    }));
+
+    res.json(movies);
   } catch (error) {
     res.status(500).json({ error: "Error fetching data" });
   }
@@ -29,7 +37,14 @@ app.get("/recommend/:movieId", async (req, res) => {
     const response = await axios.get(
       `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${TMDB_API_KEY}`
     );
-    res.json(response.data.results);
+
+    const recommendations = response.data.results.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster_path ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : null
+    }));
+
+    res.json(recommendations);
   } catch (error) {
     res.status(500).json({ error: "Error fetching recommendations" });
   }

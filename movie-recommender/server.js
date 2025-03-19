@@ -4,12 +4,27 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const pool = require("./db"); // Import PostgreSQL connection
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+const pool = require("./db"); // Import PostgreSQL connection/ allows us to query the database
+
+//ROUTES//
+
+//create a watchlist
+//async function
+
+/*
+app.post("/watchlists", authenticateUser, async (req, res) => {
+  try {
+    console.log(req.body);//test to see posts
+  } catch (error) {
+    console.error(error.message);
+  }
+})
+*/
 const TMDB_API_KEY = process.env.TMDB_API_KEY; // Your TMDB API Key
 const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"; // Image URL for posters
 
@@ -29,6 +44,9 @@ const authenticateUser = (req, res, next) => {
   }
 };
 
+
+//ROUTES//
+
 // ✅ User Registration
 app.post("/api/auth/register", async (req, res) => {
   const { username, email, password } = req.body;
@@ -41,6 +59,7 @@ app.post("/api/auth/register", async (req, res) => {
     );
     res.json({ message: "User registered!", user: result.rows[0] });
   } catch (error) {
+    console.error("❌ Registration Error:", error); // ✅ Log the actual error
     res.status(500).json({ error: "Registration failed" });
   }
 });

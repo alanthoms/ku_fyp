@@ -1,5 +1,9 @@
+//file configures how to connect to database
+
+//imported the pool object from the pg package
 const { Pool } = require("pg");
 require("dotenv").config();
+
 
 const pool = new Pool({
   user: process.env.DB_USER || "postgres",

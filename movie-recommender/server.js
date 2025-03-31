@@ -6,7 +6,12 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+//app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000", // Specify your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"], // Ensure Authorization is allowed
+}));
 app.use(express.json());
 
 const pool = require("./db"); // Import PostgreSQL connection/ allows us to query the database
@@ -112,17 +117,19 @@ app.get("/api/reviews/:movieId", async (req, res) => {
 // ✅ Create a new watchlist
 app.post("/api/watchlists", authenticateUser, async (req, res) => {
   const { name } = req.body;
-
   try {
+    console.log('Creating watchlist for userId:', req.userId);  // Log the userId
     const result = await pool.query(
       "INSERT INTO watchlists (user_id, name) VALUES ($1, $2) RETURNING id, name",
       [req.userId, name]
     );
     res.json({ message: "Watchlist created!", watchlist: result.rows[0] });
   } catch (error) {
+    console.error("❌ Error creating watchlist:", error.message); // Log the error message
     res.status(500).json({ error: "Failed to create watchlist" });
   }
 });
+
 
 // ✅ Get all watchlists of a user
 app.get("/api/watchlists", authenticateUser, async (req, res) => {

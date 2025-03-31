@@ -34,6 +34,8 @@ const Watchlists = () => {
       </ul>
     </div>
   );
+
+
 };
 
 export default Watchlists;

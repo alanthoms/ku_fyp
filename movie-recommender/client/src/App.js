@@ -1,20 +1,23 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 
-const PrivateRoute = ({ element }) => {
-  const isAuthenticated = localStorage.getItem("token"); // Check if user has a token
-  return isAuthenticated ? element : <Navigate to="/login" />;
-};
-
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  useEffect(() => {
+    setIsAuthenticated(!!localStorage.getItem("token"));
+  }, []);
+
+  if (isAuthenticated === null) return <div>Loading...</div>; // Prevents flashing between pages
+
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
       </Routes>
     </Router>
   );

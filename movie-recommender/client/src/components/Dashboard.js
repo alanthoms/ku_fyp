@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MovieSearch from "./MovieSearch";
 import MovieRecommendations from "./MovieRecommendations";
 import Watchlists from "./Watchlists"; // ✅ Import the Watchlists component
+import CreateWatchlist from "./CreateWatchlist"; // ✅ Import the form component
 
 function Dashboard() {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -12,6 +13,10 @@ function Dashboard() {
 
       {/* ✅ Watchlists Component */}
       <Watchlists />
+
+      {/* ✅ Create Watchlist Form */}
+      <CreateWatchlist />
+
 
       {/* ✅ Pass onMovieSelect as a prop */}
       <MovieSearch onMovieSelect={setSelectedMovie} />

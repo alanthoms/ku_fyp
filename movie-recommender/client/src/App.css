@@ -33,32 +33,71 @@ input {
 button {
   padding: 10px 20px;
   font-size: 1rem;
-  background: #007bff;
   color: white;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.3s;
 }
 
-button:hover {
-  background: #0056b3;
+/* Style buttons with a subtle color on default state */
+.edit-button {
+  background-color: #444;
+  color: #28a745; /* Green color */
+  border: 2px solid #28a745;
+}
+
+.delete-button {
+  background-color: #444;
+  color: #dc3545; /* Red color */
+  border: 2px solid #dc3545;
+}
+
+/* On hover, highlight the button and make it more interactive */
+.edit-button:hover {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+  transform: translateY(-2px);
+}
+
+.delete-button:hover {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+  transform: translateY(-2px);
 }
 
 ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-li {
+.watchlist-item {
   padding: 10px;
-  cursor: pointer;
-  transition: 0.3s;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  background: #2d2d2d;
+  transition: background 0.3s;
 }
 
-li:hover {
+.watchlist-item:hover {
   background: #333;
-  border-radius: 5px;
+}
+
+.watchlist-name {
+  font-size: 1.5rem; /* Adjusted size */
+  font-weight: 400; /* Less bold than before */
+  color: #ffffff;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
 }
 
 .movie-list {

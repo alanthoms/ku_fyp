@@ -165,6 +165,22 @@ app.get("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, res
   }
 });
 
+
+app.delete("/api/watchlists/:id", authenticateUser, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("DELETE FROM watchlists WHERE id = $1 AND user_id = $2 RETURNING *", [id, req.userId]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Watchlist not found or you don't have permission to delete it" });
+    }
+    res.json({ message: "Watchlist deleted successfully", watchlist: result.rows[0] });
+  } catch (error) {
+    console.error("❌ Error deleting watchlist:", error.message);
+    res.status(500).json({ error: "Failed to delete watchlist" });
+  }
+});
+
+
 // ✅ Movie search endpoint
 app.get("/search/:movie", async (req, res) => {
   const movieName = req.params.movie;

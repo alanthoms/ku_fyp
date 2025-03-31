@@ -1,9 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
+
+
 const Watchlists = () => {
   const [watchlists, setWatchlists] = useState([]);
   const [error, setError] = useState(null);
+
+
+  //delete function
+  const deleteWatchlist = async (id) => {
+    try {
+      const token = localStorage.getItem("token"); // Get authentication token
+      const response = await axios.delete(`http://localhost:5000/api/watchlists/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(response); // Log response for debugging
+      setWatchlists(watchlists.filter(watchlist => watchlist.id !== id)); // Remove the deleted watchlist from the state
+    } catch (err) {
+      console.error("Error deleting watchlist:", err.message); // Log the error message
+    }
+  }
 
   useEffect(() => {
     const fetchWatchlists = async () => {
@@ -19,23 +37,32 @@ const Watchlists = () => {
     };
 
     fetchWatchlists();
-  }, []);
+  }, []); //thing at the end makes it one request only
 
+
+  console.log(watchlists);
   return (
     <div>
       <h2>My Watchlists</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <ul>
         {watchlists.length > 0 ? (
-          watchlists.map((watchlist) => <li key={watchlist.id}>{watchlist.name}</li>)
+          watchlists.map((watchlist) => (
+            <li key={watchlist.id} className="watchlist-item">
+              <span className="watchlist-name">{watchlist.name}</span>
+              <div className="button-container">
+                <button className="edit-button">Edit</button>
+                <button className="delete-button"
+                  onClick={() => deleteWatchlist(watchlist.id)}>Delete</button>
+              </div>
+            </li>
+          ))
         ) : (
           <p>No watchlists found.</p>
         )}
       </ul>
     </div>
   );
-
-
 };
 
 export default Watchlists;

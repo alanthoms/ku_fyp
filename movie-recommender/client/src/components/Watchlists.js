@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import EditWatchlist from "./EditWatchlist";
 
 
 
@@ -50,8 +50,9 @@ const Watchlists = () => {
           watchlists.map((watchlist) => (
             <li key={watchlist.id} className="watchlist-item">
               <span className="watchlist-name">{watchlist.name}</span>
+
               <div className="button-container">
-                <button className="edit-button">Edit</button>
+                <div><EditWatchlist watchlist = {watchlist}/></div>
                 <button className="delete-button"
                   onClick={() => deleteWatchlist(watchlist.id)}>Delete</button>
               </div>

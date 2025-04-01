@@ -166,6 +166,31 @@ app.get("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, res
 });
 
 
+// ✅ Update an existing watchlist
+app.put("/api/watchlists/:id", authenticateUser, async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  try {
+    const result = await pool.query(
+      "UPDATE watchlists SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *",
+      [name, id, req.userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Watchlist not found or you don't have permission to update it" });
+    }
+
+    res.json({ message: "Watchlist updated successfully", watchlist: result.rows[0] });
+  } catch (error) {
+    console.error("❌ Error updating watchlist:", error.message);
+    res.status(500).json({ error: "Failed to update watchlist" });
+  }
+});
+
+
+
+//Delete
 app.delete("/api/watchlists/:id", authenticateUser, async (req, res) => {
   const { id } = req.params;
   try {

@@ -210,6 +210,30 @@ ul {
   background-color: #008c9e !important;
 }
 
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* Centers the items */
+  gap: 16px;
+  /* Adds spacing between the cards */
+}
+
+.movie-card {
+  width: 23%;
+  /* Approximately 4 cards per row */
+  background: #222;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
 .movie-card {
   width: 160px;
   background: #222;

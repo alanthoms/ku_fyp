@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,20 +15,20 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Login failed");
-  
+
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-  
+
       alert("Login Successful!");
       window.location.href = "/dashboard"; // ✅ Ensures a full page reload
     } catch (err) {
       setError(err.message);
     }
   };
-  
+
 
   return (
     <div>
@@ -39,6 +39,12 @@ const Login = () => {
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Login</button>
       </form>
+      <p>
+        Don't have an account?{" "}
+        <Link to="/register" style={{ color: "blue" }}>
+          Register here
+        </Link>
+      </p>
     </div>
   );
 };

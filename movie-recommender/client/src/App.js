@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import Register from "./components/Register";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
   );

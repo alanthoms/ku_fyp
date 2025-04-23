@@ -65,7 +65,7 @@ app.post("/api/auth/register", async (req, res) => {
     res.json({ message: "User registered!", user: result.rows[0] });
   } catch (error) {
     console.error("❌ Registration Error:", error); // ✅ Log the actual error
-    res.status(500).json({ error: "Registration failed" });
+    res.status(500).json({ error: error.message || "Registration failed" });
   }
 });
 
@@ -90,6 +90,7 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // ✅ Add a new review
+//post cause adding, request and response, async to wait for the database to respond
 app.post("/api/reviews", authenticateUser, async (req, res) => {
   const { movieId, review, rating } = req.body;
 

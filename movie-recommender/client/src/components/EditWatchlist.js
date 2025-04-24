@@ -43,16 +43,13 @@ const EditWatchlist = ({ watchlist }) => {
       >
         Edit
       </button>
-
       <div className="modal fade" id={`id${watchlist.id}`} tabIndex="-1" role="dialog" aria-hidden="true" onClick={() => setWatchlistName(watchlist.name)}>
         <div className="modal-dialog" role="document">
           <div className="modal-content">
-
             <div className="modal-header">
               <h4 className="modal-title">Edit Watchlist</h4>
               <button type="button" className="close" data-dismiss="modal" onClick={() => setWatchlistName(watchlist.name)}>&times;</button>
             </div>
-
             <div className="modal-body">
               <input
                 type="text"
@@ -61,7 +58,6 @@ const EditWatchlist = ({ watchlist }) => {
                 onChange={(e) => setWatchlistName(e.target.value)}
               />
             </div>
-
             <div className="modal-footer">
               <button
                 type="button"
@@ -70,9 +66,9 @@ const EditWatchlist = ({ watchlist }) => {
               >
                 Save
               </button>
-              <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={() => setWatchlistName(watchlist.name)}>Close</button>
+              <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={() => setWatchlistName(watchlist.name)}>
+                Close</button>
             </div>
-
           </div>
         </div>
       </div>

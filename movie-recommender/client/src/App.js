@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Register from "./components/Register";
+import MovieDetail from "./components/MovieDetail";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/movie/:movieId" element={<MovieDetail />} />
       </Routes>
     </Router>
   );

@@ -265,3 +265,21 @@ ul {
   font-size: 14px;
   border-radius: 5px;
 }
+
+.logout-button {
+  background-color: #dc2626;
+  /* red-600 */
+  color: white;
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+  border: none;
+}
+
+.logout-button:hover {
+  background-color: #b91c1c;
+  /* red-700 */
+  transform: scale(1.05);
+}

@@ -52,7 +52,7 @@ const authenticateUser = (req, res, next) => {
 
 //ROUTES//
 
-// ✅ User Registration
+//  User Registration
 app.post("/api/auth/register", async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -64,12 +64,12 @@ app.post("/api/auth/register", async (req, res) => {
     );
     res.json({ message: "User registered!", user: result.rows[0] });
   } catch (error) {
-    console.error("❌ Registration Error:", error); // ✅ Log the actual error
+    console.error(" Registration Error:", error); // Log the actual error
     res.status(500).json({ error: error.message || "Registration failed" });
   }
 });
 
-// ✅ User Login
+//  User Login
 app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -105,7 +105,7 @@ app.post("/api/reviews", authenticateUser, async (req, res) => {
   }
 });
 
-// ✅ Get reviews for a movie
+// Get reviews for a movie
 app.get("/api/reviews/:movieId", async (req, res) => {
   try {
     const reviews = await pool.query("SELECT * FROM reviews WHERE movie_id = $1", [req.params.movieId]);
@@ -132,7 +132,7 @@ app.post("/api/watchlists", authenticateUser, async (req, res) => {
 });
 
 
-// ✅ Get all watchlists of a user
+//  Get all watchlists of a user
 app.get("/api/watchlists", authenticateUser, async (req, res) => {
   try {
     const watchlists = await pool.query("SELECT * FROM watchlists WHERE user_id = $1", [req.userId]);
@@ -244,6 +244,29 @@ app.get("/recommend/:movieId", async (req, res) => {
     res.json(recommendations);
   } catch (error) {
     res.status(500).json({ error: "Error fetching recommendations" });
+  }
+});
+
+// ✅ Movie detail endpoint
+app.get("/movie/:movieId", async (req, res) => {
+  const { movieId } = req.params;
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`
+    );
+
+    const movie = response.data;
+    res.json({
+      id: movie.id,
+      title: movie.title,
+      year: movie.release_date?.split("-")[0],
+      runtime: movie.runtime,
+      overview: movie.overview,
+      poster: movie.poster_path ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : null,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching movie details:", error.message);
+    res.status(500).json({ error: "Error fetching movie details" });
   }
 });
 

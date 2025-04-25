@@ -28,13 +28,11 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Validate password match
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
-    // Validate password strength
     if (passwordStrength !== "Strong") {
       setError("Password is not strong enough");
       return;
@@ -58,51 +56,49 @@ const Register = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 shadow-lg mt-10 rounded bg-white">
-      <h2 className="text-xl font-bold mb-4">Create Account</h2>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
-      <form onSubmit={handleRegister} className="space-y-4">
+    <div>
+      <button onClick={() => navigate(-1)}>← Back</button>
+      <h2>Create Account</h2>
+      {error && <p>{error}</p>}
+      <form onSubmit={handleRegister}>
         <input
           type="text"
           placeholder="Username"
-          className="w-full p-2 border rounded"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
+        <br />
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-2 border rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+        <br />
         <input
           type="password"
           placeholder="Password"
-          className="w-full p-2 border rounded"
           value={password}
           onChange={handlePasswordChange}
           required
         />
         {password && (
-          <p className={`text-sm ${passwordStrength === "Strong" ? "text-green-600" : "text-orange-500"}`}>
+          <p>
             Strength: {passwordStrength}
           </p>
         )}
+        <br />
         <input
           type="password"
           placeholder="Confirm Password"
-          className="w-full p-2 border rounded"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
+        <br />
+        <button type="submit">
           Register
         </button>
       </form>

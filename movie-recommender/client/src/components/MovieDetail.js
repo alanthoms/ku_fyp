@@ -10,6 +10,10 @@ const MovieDetail = () => {
   const [rating, setRating] = useState(5);
   const [isEditing, setIsEditing] = useState(false);
 
+
+  const [watchlists, setWatchlists] = useState([]);
+  const [selectedWatchlistId, setSelectedWatchlistId] = useState("");
+
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -18,7 +22,9 @@ const MovieDetail = () => {
       try {
         const movieResponse = await axios.get(`http://localhost:5000/movie/${movieId}`);
         const reviewsResponse = await axios.get(`http://localhost:5000/api/reviews/${movieId}`);
-
+        const watchlistsResponse = await axios.get("http://localhost:5000/api/watchlists", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const movieData = movieResponse.data;
         setMovie({
           id: movieData.id,
@@ -36,6 +42,7 @@ const MovieDetail = () => {
           setRating(review.rating);
           setIsEditing(true);
         }
+        setWatchlists(watchlistsResponse.data);
       } catch (error) {
         console.error("Error fetching movie details:", error);
       }
@@ -44,8 +51,24 @@ const MovieDetail = () => {
     fetchMovieDetails();
   }, [movieId, user.id]);
 
+  const handleAddToWatchlist = async () => {
+    console.log("Trying to add movie:", { selectedWatchlistId, movieId: movie.id });
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(`http://localhost:5000/api/watchlists/${selectedWatchlistId}/movies`,
+        { movieId: movie.id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("🎥 Movie added to watchlist!");
+    } catch (error) {
+      console.error("Failed to add to watchlist", error);
+      alert("Failed to add movie to watchlist!");
+    }
+  };
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
+    console.log("Adding movie to watchlist:", selectedWatchlistId, movie.id);
     try {
       await axios.post("http://localhost:5000/api/reviews", {
         movieId: movie.id,
@@ -70,9 +93,17 @@ const MovieDetail = () => {
       <div>
         <img src={movie.poster} alt={movie.title} />
         <div>
+          <button onClick={handleAddToWatchlist}>Add to Watchlist</button>
+          <select value={selectedWatchlistId} onChange={(e) => setSelectedWatchlistId(e.target.value)}>
+            <option value="">-- Select Watchlist --</option>
+            {watchlists.map(watchlist => (
+              <option key={watchlist.id} value={watchlist.id}>{watchlist.name}</option>
+            ))}
+          </select>
           <h1>{movie.title}</h1>
           <p>{movie.year}, {movie.runtime} mins</p>
           <p>{movie.overview}</p>
+
         </div>
       </div>
 

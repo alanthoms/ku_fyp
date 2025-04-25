@@ -207,7 +207,7 @@ app.delete("/api/watchlists/:id", authenticateUser, async (req, res) => {
 });
 
 
-// ✅ Movie search endpoint
+//  Movie search endpoint
 app.get("/search/:movie", async (req, res) => {
   const movieName = req.params.movie;
   try {

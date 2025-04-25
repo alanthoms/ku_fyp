@@ -195,10 +195,19 @@ app.put("/api/watchlists/:id", authenticateUser, async (req, res) => {
 app.delete("/api/watchlists/:id", authenticateUser, async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query("DELETE FROM watchlists WHERE id = $1 AND user_id = $2 RETURNING *", [id, req.userId]);
+    // Step 1: Delete all movies linked to this watchlist
+    await pool.query("DELETE FROM watchlist_movies WHERE watchlist_id = $1", [id]);
+
+    // Step 2: Now delete the watchlist itself
+    const result = await pool.query(
+      "DELETE FROM watchlists WHERE id = $1 AND user_id = $2 RETURNING *",
+      [id, req.userId]
+    );
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Watchlist not found or you don't have permission to delete it" });
     }
+
     res.json({ message: "Watchlist deleted successfully", watchlist: result.rows[0] });
   } catch (error) {
     console.error("❌ Error deleting watchlist:", error.message);

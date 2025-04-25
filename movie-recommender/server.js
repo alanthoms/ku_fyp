@@ -159,7 +159,10 @@ app.post("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, re
 // ✅ Get movies in a watchlist
 app.get("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, res) => {
   try {
-    const movies = await pool.query("SELECT * FROM watchlist_movies WHERE watchlist_id = $1", [req.params.watchlistId]);
+    const movies = await pool.query(
+      "SELECT id, watchlist_id, movie_id, ticked FROM watchlist_movies WHERE watchlist_id = $1",
+      [req.params.watchlistId]
+    );
     res.json(movies.rows);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch watchlist movies" });
@@ -276,6 +279,21 @@ app.get("/movie/:movieId", async (req, res) => {
   } catch (error) {
     console.error("❌ Error fetching movie details:", error.message);
     res.status(500).json({ error: "Error fetching movie details" });
+  }
+});
+
+// ✅ Toggle tick for a movie
+app.put("/api/watchlists/:watchlistId/movies/:movieId/tick", authenticateUser, async (req, res) => {
+  const { watchlistId, movieId } = req.params;
+  const { ticked } = req.body;
+  try {
+    await pool.query(
+      "UPDATE watchlist_movies SET ticked = $1 WHERE watchlist_id = $2 AND movie_id = $3",
+      [ticked, watchlistId, movieId]
+    );
+    res.json({ message: "Tick status updated" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update tick status" });
   }
 });
 

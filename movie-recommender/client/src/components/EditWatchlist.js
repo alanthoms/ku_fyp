@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const EditWatchlist = ({ watchlist }) => {
   const [movies, setMovies] = useState([]);
+  const [tickedMovies, setTickedMovies] = useState(new Set());
   const navigate = useNavigate();
 
   const openModal = async () => {
@@ -13,7 +14,6 @@ const EditWatchlist = ({ watchlist }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      // Fetch full movie details via your backend
       const detailedMovies = await Promise.all(
         response.data.map(async (entry) => {
           const backendRes = await axios.get(`http://localhost:5000/movie/${entry.movie_id}`);
@@ -21,14 +21,41 @@ const EditWatchlist = ({ watchlist }) => {
             id: backendRes.data.id,
             title: backendRes.data.title,
             poster: backendRes.data.poster,
+            ticked: entry.ticked, //
           };
         })
       );
-
       setMovies(detailedMovies);
     } catch (err) {
       console.error("Failed to fetch movies:", err.message);
     }
+  };
+
+  const handleTick = async (movieId) => {
+    const movie = movies.find(m => m.id === movieId);
+    const newTickedState = !movie.ticked;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(`http://localhost:5000/api/watchlists/${watchlist.id}/movies/${movieId}/tick`, {
+        ticked: newTickedState
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setMovies(prevMovies =>
+        prevMovies.map(m => m.id === movieId ? { ...m, ticked: newTickedState } : m)
+      );
+    } catch (err) {
+      console.error("Failed to update ticked status:", err.message);
+    }
+  };
+
+  const handleMovieClick = (movieId) => {
+    navigate(`/movie/${movieId}`);
+    document.getElementById(`id${watchlist.id}`).classList.remove("show");
+    document.body.classList.remove("modal-open");
+    document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
   };
 
   return (
@@ -44,7 +71,7 @@ const EditWatchlist = ({ watchlist }) => {
       </button>
 
       <div className="modal fade" id={`id${watchlist.id}`} tabIndex="-1" role="dialog" aria-hidden="true">
-        <div className="modal-dialog" role="document">
+        <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
               <h4 className="modal-title">{watchlist.name}</h4>
@@ -54,31 +81,45 @@ const EditWatchlist = ({ watchlist }) => {
               {movies.length === 0 ? (
                 <p>No movies in this watchlist yet.</p>
               ) : (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                  {movies.map((movie) => (
-                    <div key={movie.id} style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        navigate(`/movie/${movie.id}`);
-                        document.getElementById(`id${watchlist.id}`).classList.remove("show");
-                        document.body.classList.remove("modal-open");
-                        document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
-                      }}
-                    >
-                      {movie.poster ? (
-                        <img src={movie.poster} alt={movie.title} width="100" />
-                      ) : (
-                        <div style={{ width: '100px', height: '150px', background: '#ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          No Image
+                <div className="modal-body">
+                  {movies.length === 0 ? (
+                    <p>No movies in this watchlist yet.</p>
+                  ) : (
+                    <div className="movie-row-list">
+                      {movies.map((movie) => (
+                        <div
+                          key={movie.id}
+                          className={`movie-row ${movie.ticked ? 'ticked' : ''}`}
+                        >
+                          <div className="movie-info" onClick={() => handleMovieClick(movie.id)}>
+                            {movie.poster ? (
+                              <img src={movie.poster} alt={movie.title} className="movie-row-poster" />
+                            ) : (
+                              <div className="no-poster">No Image</div>
+                            )}
+                            <h3 className={`movie-title ${movie.ticked ? 'ticked' : ''}`}>
+                              {movie.title}
+                            </h3>
+                          </div>
+                          <div className="tick-placeholder">
+                            <input
+                              type="checkbox"
+                              checked={movie.ticked}
+                              onChange={() => handleTick(movie.id)}
+                              className="tick-checkbox"
+                            />
+                          </div>
                         </div>
-                      )}
-                      <p style={{ textAlign: 'center' }}>{movie.title}</p>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
               )}
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-danger" data-dismiss="modal">
+                Close
+              </button>
             </div>
           </div>
         </div>

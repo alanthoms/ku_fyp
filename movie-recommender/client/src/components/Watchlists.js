@@ -52,7 +52,7 @@ const Watchlists = () => {
               <span className="watchlist-name">{watchlist.name}</span>
 
               <div className="button-container">
-                <div><EditWatchlist watchlist = {watchlist}/></div>
+                <div><EditWatchlist watchlist={watchlist} /></div>
                 <button className="delete-button"
                   onClick={() => deleteWatchlist(watchlist.id)}>Delete</button>
               </div>

@@ -1,35 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const EditWatchlist = ({ watchlist }) => {
-  const [watchlistName, setWatchlistName] = useState(watchlist.name);
+  const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
 
-  const updateWatchlistName = async (e) => {
-    e.preventDefault();
-
+  const openModal = async () => {
     try {
-      const token = localStorage.getItem("token"); // Get authentication token
-      const response = await fetch(`http://localhost:5000/api/watchlists/${watchlist.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name: watchlistName }),
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`http://localhost:5000/api/watchlists/${watchlist.id}/movies`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update watchlist");
-      }
+      // Fetch full movie details via your backend
+      const detailedMovies = await Promise.all(
+        response.data.map(async (entry) => {
+          const backendRes = await axios.get(`http://localhost:5000/movie/${entry.movie_id}`);
+          return {
+            id: backendRes.data.id,
+            title: backendRes.data.title,
+            poster: backendRes.data.poster,
+          };
+        })
+      );
 
-      // Close the modal manually
-      document.getElementById(`id${watchlist.id}`).classList.remove("show");
-      document.body.classList.remove("modal-open");
-      document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
-
-      // Reload the page
-      window.location.reload();
+      setMovies(detailedMovies);
     } catch (err) {
-      console.error("Error updating watchlist:", err.message);
+      console.error("Failed to fetch movies:", err.message);
     }
   };
 
@@ -40,34 +38,47 @@ const EditWatchlist = ({ watchlist }) => {
         className="btn btn-primary"
         data-toggle="modal"
         data-target={`#id${watchlist.id}`}
+        onClick={openModal}
       >
-        Edit
+        View Watchlist
       </button>
-      <div className="modal fade" id={`id${watchlist.id}`} tabIndex="-1" role="dialog" aria-hidden="true" onClick={() => setWatchlistName(watchlist.name)}>
+
+      <div className="modal fade" id={`id${watchlist.id}`} tabIndex="-1" role="dialog" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h4 className="modal-title">Edit Watchlist</h4>
-              <button type="button" className="close" data-dismiss="modal" onClick={() => setWatchlistName(watchlist.name)}>&times;</button>
+              <h4 className="modal-title">{watchlist.name}</h4>
+              <button type="button" className="close" data-dismiss="modal">&times;</button>
             </div>
             <div className="modal-body">
-              <input
-                type="text"
-                className="form-control"
-                value={watchlistName}
-                onChange={(e) => setWatchlistName(e.target.value)}
-              />
+              {movies.length === 0 ? (
+                <p>No movies in this watchlist yet.</p>
+              ) : (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                  {movies.map((movie) => (
+                    <div key={movie.id} style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        navigate(`/movie/${movie.id}`);
+                        document.getElementById(`id${watchlist.id}`).classList.remove("show");
+                        document.body.classList.remove("modal-open");
+                        document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
+                      }}
+                    >
+                      {movie.poster ? (
+                        <img src={movie.poster} alt={movie.title} width="100" />
+                      ) : (
+                        <div style={{ width: '100px', height: '150px', background: '#ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          No Image
+                        </div>
+                      )}
+                      <p style={{ textAlign: 'center' }}>{movie.title}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={updateWatchlistName} // No e needed, already handled inside function
-              >
-                Save
-              </button>
-              <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={() => setWatchlistName(watchlist.name)}>
-                Close</button>
+              <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>

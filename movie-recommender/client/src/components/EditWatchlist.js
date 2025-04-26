@@ -97,6 +97,7 @@ const EditWatchlist = ({ watchlist }) => {
                             ) : (
                               <div className="no-poster">No Image</div>
                             )}
+                        
                             <h3 className={`movie-title ${movie.ticked ? 'ticked' : ''}`}>
                               {movie.title}
                             </h3>

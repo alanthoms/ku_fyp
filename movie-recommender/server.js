@@ -135,9 +135,19 @@ app.post("/api/watchlists", authenticateUser, async (req, res) => {
 //  Get all watchlists of a user
 app.get("/api/watchlists", authenticateUser, async (req, res) => {
   try {
-    const watchlists = await pool.query("SELECT * FROM watchlists WHERE user_id = $1", [req.userId]);
-    res.json(watchlists.rows);
+    const result = await pool.query(`
+      SELECT w.id, w.name,
+             COUNT(wm.movie_id) AS total_movies,
+             COALESCE(SUM(CASE WHEN wm.ticked THEN 1 ELSE 0 END), 0) AS ticked_movies
+      FROM watchlists w
+      LEFT JOIN watchlist_movies wm ON w.id = wm.watchlist_id
+      WHERE w.user_id = $1
+      GROUP BY w.id
+    `, [req.userId]);
+
+    res.json(result.rows);
   } catch (error) {
+    console.error(error.message);
     res.status(500).json({ error: "Failed to fetch watchlists" });
   }
 });

@@ -397,5 +397,23 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
 });
 
 
+// 
+app.delete("/api/reviews/:reviewId", authenticateUser, async (req, res) => {
+  const { reviewId } = req.params;
+  try {
+    const result = await pool.query(
+      "DELETE FROM reviews WHERE id = $1 AND user_id = $2 RETURNING *",
+      [reviewId, req.userId]
+    );
 
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Review not found or unauthorized" });
+    }
+
+    res.json({ message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("❌ Error deleting review:", error.message);
+    res.status(500).json({ error: "Failed to delete review" });
+  }
+});
 

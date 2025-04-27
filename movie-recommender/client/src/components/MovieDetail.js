@@ -86,6 +86,21 @@ const MovieDetail = () => {
     }
   };
 
+  const handleDeleteReview = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/reviews/${userReview.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Review deleted!");
+      setUserReview(null);
+      setIsEditing(false);
+      setReviewText("");
+      setRating(5);
+    } catch (error) {
+      console.error("Failed to delete review:", error.message);
+    }
+  };
+
   if (!movie) return <p>Loading movie details...</p>;
 
   return (
@@ -113,6 +128,11 @@ const MovieDetail = () => {
             <h2>Your Review</h2>
             <p>{reviewText}</p>
             <p>Rating: {rating}/10</p>
+            <button
+              onClick={handleDeleteReview}
+              >
+              Delete Review
+            </button>
           </>
         ) : (
           <>

@@ -135,19 +135,9 @@ app.post("/api/watchlists", authenticateUser, async (req, res) => {
 //  Get all watchlists of a user
 app.get("/api/watchlists", authenticateUser, async (req, res) => {
   try {
-    const result = await pool.query(`
-      SELECT w.id, w.name,
-             COUNT(wm.movie_id) AS total_movies,
-             COALESCE(SUM(CASE WHEN wm.ticked THEN 1 ELSE 0 END), 0) AS ticked_movies
-      FROM watchlists w
-      LEFT JOIN watchlist_movies wm ON w.id = wm.watchlist_id
-      WHERE w.user_id = $1
-      GROUP BY w.id
-    `, [req.userId]);
-
-    res.json(result.rows);
+    const watchlists = await pool.query("SELECT * FROM watchlists WHERE user_id = $1", [req.userId]);
+    res.json(watchlists.rows);
   } catch (error) {
-    console.error(error.message);
     res.status(500).json({ error: "Failed to fetch watchlists" });
   }
 });
@@ -223,7 +213,7 @@ app.delete("/api/watchlists/:id", authenticateUser, async (req, res) => {
 
     res.json({ message: "Watchlist deleted successfully", watchlist: result.rows[0] });
   } catch (error) {
-    console.error("❌ Error deleting watchlist:", error.message);
+    console.error("Error deleting watchlist:", error.message);
     res.status(500).json({ error: "Failed to delete watchlist" });
   }
 });
@@ -310,3 +300,80 @@ app.put("/api/watchlists/:watchlistId/movies/:movieId/tick", authenticateUser, a
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
+
+// Get 3 movie recommendations based on user's reviews
+app.get("/api/recommendations", authenticateUser, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // 1. Fetch all reviews by this user
+    const userReviews = await pool.query(
+      "SELECT movie_id, review, rating FROM reviews WHERE user_id = $1",
+      [userId]
+    );
+
+    if (userReviews.rows.length === 0) {
+      return res.status(400).json({ error: "No reviews found for user." });
+    }
+
+    // 2. Fetch movie titles for each movie_id
+    const detailedReviews = await Promise.all(
+      userReviews.rows.map(async (r) => {
+        const movieDetails = await axios.get(`http://localhost:5000/movie/${r.movie_id}`);
+        return {
+          title: movieDetails.data.title,
+          rating: r.rating,
+          review: r.review,
+        };
+      })
+    );
+
+    // 3. Prepare text for OpenAI prompt
+    const combinedReviews = detailedReviews.map(r =>
+      `Movie: '${r.title}' (Rating: ${r.rating}/10) - Review: "${r.review}"`
+    ).join("\n");
+
+    // 4. Send to OpenAI
+    const aiResponse = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful assistant recommending exactly 3 movies based on a user's detailed reviews and ratings. Only return a JSON array of 3 TMDB movie IDs like [123, 456, 789]. No explanations, no text around it."
+          },
+          {
+            role: "user",
+            content: `Here are my past movie reviews and ratings:\n\n${combinedReviews}\n\nRecommend 3 movies.`
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 200,
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const recommendedIds = JSON.parse(aiResponse.data.choices[0].message.content);
+
+    // 5. Fetch full movie details
+    const detailedMovies = await Promise.all(
+      recommendedIds.map(async (movieId) => {
+        const movieDetails = await axios.get(`http://localhost:5000/movie/${movieId}`);
+        return movieDetails.data;
+      })
+    );
+
+    res.json(detailedMovies);
+
+  } catch (error) {
+    console.error("Error getting recommendations:", error.message);
+    res.status(500).json({ error: "Failed to generate recommendations" });
+  }
+});

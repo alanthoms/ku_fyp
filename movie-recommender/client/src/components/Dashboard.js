@@ -6,6 +6,7 @@ import MovieRecommendations from "./MovieRecommendations";
 import Watchlists from "./Watchlists"; // ✅ Import the Watchlists component
 import CreateWatchlist from "./CreateWatchlist"; // ✅ Import the form component
 import MovieDetail from "./MovieDetail";
+import Recommendations from "./Recommendations";
 //<Route path="/movie/:movieId" element={<MovieDetail />} />
 
 //
@@ -32,6 +33,10 @@ function Dashboard() {
           Logout
         </button>
       </div>
+
+      {/* ⭐ Show Recommendations after greeting */}
+      <Recommendations />
+
       {/* ✅ Watchlists Component */}
       <Watchlists />
 

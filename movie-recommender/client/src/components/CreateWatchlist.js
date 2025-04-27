@@ -30,7 +30,7 @@ const CreateWatchlist = () => {
     <h1>Add New Watchlist</h1>
     <form className="d-flex" onSubmit={onSubmitForm}>
       <input type="text" placeholder="Enter New Watchlist Name" className="form-control"
-       value={watchlistName} onChange={e => setWatchlistName(e.target.value)} />
+        value={watchlistName} onChange={e => setWatchlistName(e.target.value)} />
       <button type="submit" className="btn btn-success">Create</button>
     </form>
   </>;

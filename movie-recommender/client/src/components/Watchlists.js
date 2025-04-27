@@ -50,7 +50,7 @@ const Watchlists = () => {
           watchlists.map((watchlist) => (
 
             <li key={watchlist.id} className="watchlist-item">
-              <span className="watchlist-name"> {watchlist.name} ({watchlist.ticked_movies}/{watchlist.total_movies})</span>
+              <span className="watchlist-name"> {watchlist.name}</span>
 
               <div className="button-container">
                 <div><EditWatchlist watchlist={watchlist} /></div>

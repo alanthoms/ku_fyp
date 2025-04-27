@@ -302,24 +302,42 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
 
+// Helper function to get user's reviews
+const getUserReviews = async (userId) => {
+  const userReviews = await pool.query(
+    "SELECT movie_id, review, rating FROM reviews WHERE user_id = $1",
+    [userId]
+  );
+  return userReviews.rows;
+};
+
+//  Get all reviews for the logged-in user
+app.get("/api/myreviews", authenticateUser, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const userReviews = await getUserReviews(userId); // reuse your helper function!
+
+    res.json(userReviews); // send straight back
+  } catch (error) {
+    console.error("Error fetching user reviews:", error.message);
+    res.status(500).json({ error: "Failed to fetch user reviews" });
+  }
+});
+
+
+
 // Get 3 movie recommendations based on user's reviews
 app.get("/api/recommendations", authenticateUser, async (req, res) => {
   try {
     const userId = req.userId;
 
     // 1. Fetch all reviews by this user
-    const userReviews = await pool.query(
-      "SELECT movie_id, review, rating FROM reviews WHERE user_id = $1",
-      [userId]
-    );
+    const userReviews = await getUserReviews(userId);
 
-    if (userReviews.rows.length === 0) {
-      return res.status(400).json({ error: "No reviews found for user." });
-    }
-
-    // 2. Fetch movie titles for each movie_id
+    // 2. Fetch movie name rating and review for each movie_id
     const detailedReviews = await Promise.all(
-      userReviews.rows.map(async (r) => {
+      userReviews.map(async (r) => {
         const movieDetails = await axios.get(`http://localhost:5000/movie/${r.movie_id}`);
         return {
           title: movieDetails.data.title,
@@ -377,3 +395,7 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Failed to generate recommendations" });
   }
 });
+
+
+
+

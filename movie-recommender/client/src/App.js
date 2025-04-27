@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Register from "./components/Register";
 import MovieDetail from "./components/MovieDetail";
+import UserReviews from "./components/UserReviews";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -22,6 +23,7 @@ function App() {
         <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<MovieDetail />} />
+        <Route path="/user-reviews" element={<UserReviews />} />
       </Routes>
     </Router>
   );

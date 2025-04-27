@@ -7,6 +7,7 @@ import Watchlists from "./Watchlists"; // ✅ Import the Watchlists component
 import CreateWatchlist from "./CreateWatchlist"; // ✅ Import the form component
 import MovieDetail from "./MovieDetail";
 import Recommendations from "./Recommendations";
+import UserReviews from "./UserReviews";
 //<Route path="/movie/:movieId" element={<MovieDetail />} />
 
 //
@@ -16,6 +17,10 @@ function Dashboard() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const user = getUser();
   const navigate = useNavigate(); // React Router navigation
+
+  const handleViewReviews = () => {
+    navigate("/user-reviews");// naviagate to UserReviews page
+  };
 
   const handleMovieSelect = (movieId) => {
     navigate(`/movie/${movieId}`); // Navigate to MovieDetail page
@@ -37,6 +42,12 @@ function Dashboard() {
       {/* ⭐ Show Recommendations after greeting */}
       <Recommendations />
 
+      <button
+        onClick={handleViewReviews}
+        className="btn btn-primary mt-4"
+      >
+        View My Reviews
+      </button>
       {/* ✅ Watchlists Component */}
       <Watchlists />
 

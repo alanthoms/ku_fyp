@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Register from "./components/Register";
 import MovieDetail from "./components/MovieDetail";
 import UserReviews from "./components/UserReviews";
+import PersonalSettings from "./components/PersonalSettings";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -24,6 +25,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<MovieDetail />} />
         <Route path="/user-reviews" element={<UserReviews />} />
+        <Route path="/settings" element={<PersonalSettings />} />
       </Routes>
     </Router>
   );

@@ -417,3 +417,47 @@ app.delete("/api/reviews/:reviewId", authenticateUser, async (req, res) => {
   }
 });
 
+// Get user settings
+app.get("/api/user/settings", authenticateUser, async (req, res) => {
+  try {
+    const result = await pool.query("SELECT settings FROM users WHERE id = $1", [req.userId]);
+    res.json(result.rows[0]?.settings || {});
+  } catch (error) {
+    console.error("Failed to fetch settings:", error);
+    res.status(500).json({ error: "Failed to fetch settings" });
+  }
+});
+
+
+
+// Update user settings
+app.put("/api/user/settings", authenticateUser, async (req, res) => {
+  const { backgroundColor } = req.body;
+  try {
+    const result = await pool.query(
+      "UPDATE users SET settings = jsonb_set(coalesce(settings, '{}'), '{backgroundColor}', to_jsonb($1::text)) WHERE id = $2 RETURNING settings",
+      [backgroundColor, req.userId]
+    );
+    res.json({ message: "Settings updated!", settings: result.rows[0].settings });
+  } catch (error) {
+    console.error("Failed to update settings:", error);
+    res.status(500).json({ error: "Failed to update settings" });
+  }
+});
+
+
+// Get count of reviews for current user (more efficient than fetching all reviews)
+app.get("/api/user/reviews/count", authenticateUser, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT COUNT(*) FROM reviews WHERE user_id = $1",
+      [req.userId]
+    );
+    res.json({ count: parseInt(result.rows[0].count) });
+  } catch (error) {
+    console.error("Failed to fetch review count:", error);
+    res.status(500).json({ error: "Failed to fetch review count" });
+  }
+});
+
+

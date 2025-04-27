@@ -392,3 +392,26 @@ ul {
   text-decoration: line-through;
   color: #aaa;
 }
+
+
+/* App.css */
+body.default-bg {
+  background-color: #121212;
+  /* Default dark */
+}
+
+body.light-blue-bg {
+  background-color: #add8e6;
+}
+
+body.cream-yellow-bg {
+  background-color: #fff8dc;
+}
+
+body.fancy-purple-bg {
+  background-color: #d8bfd8;
+}
+
+body {
+  transition: background-color 0.5s ease;
+}

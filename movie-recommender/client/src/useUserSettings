@@ -1,0 +1,32 @@
+// src/useUserSettings.js
+import { useEffect } from "react";
+import axios from "axios";
+
+const useUserSettings = () => {
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/user/settings", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const settings = res.data.settings;
+        if (settings && settings.backgroundColor) {
+          document.body.style.backgroundColor = settings.backgroundColor;
+        } else {
+          document.body.style.backgroundColor = "#ffffff"; // fallback
+        }
+      } catch (error) {
+        console.error("Failed to fetch user settings", error);
+        document.body.style.backgroundColor = "#ffffff"; // fallback
+      }
+    };
+
+    fetchSettings();
+  }, []);
+};
+
+export default useUserSettings;

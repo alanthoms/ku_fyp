@@ -67,6 +67,7 @@ const MovieDetail = () => {
   };
 
   const handleSubmitReview = async (e) => {
+
     e.preventDefault();
     console.log("Adding movie to watchlist:", selectedWatchlistId, movie.id);
     try {
@@ -87,6 +88,9 @@ const MovieDetail = () => {
   };
 
   const handleDeleteReview = async () => {
+    //const confirmDelete = window.confirm("Are you sure you want to delete your review?");
+    //if (!confirmDelete) return;  // If the user cancels, stop.
+
     try {
       await axios.delete(`http://localhost:5000/api/reviews/${userReview.id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -128,9 +132,9 @@ const MovieDetail = () => {
             <h2>Your Review</h2>
             <p>{reviewText}</p>
             <p>Rating: {rating}/10</p>
-            <button
+            <button type="button"
               onClick={handleDeleteReview}
-              >
+            >
               Delete Review
             </button>
           </>

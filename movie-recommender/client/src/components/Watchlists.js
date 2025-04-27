@@ -11,6 +11,8 @@ const Watchlists = () => {
 
   //delete function
   const deleteWatchlist = async (id) => {
+    const confirmDelete2 = window.confirm("Are you sure you want to delete your watchlist?");
+    if (!confirmDelete2) return; // ⬅️ If user clicks "Cancel", stop the function
     try {
       const token = localStorage.getItem("token"); // Get authentication token
       const response = await axios.delete(`http://localhost:5000/api/watchlists/${id}`, {

@@ -28,7 +28,7 @@ const Recommendations = () => {
 
   return (
     <div>
-      <h2>🎬 Recommended for You</h2>
+      <h2>Recommended For You</h2>
       <div className="movie-list">
         {recommendations.map((movie) => (
           <div

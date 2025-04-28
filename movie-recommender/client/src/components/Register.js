@@ -48,7 +48,7 @@ const Register = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Registration failed");
 
-      alert("🎉 Registration successful!");
+      alert("Registration successful!");
       navigate("/login");
     } catch (err) {
       setError(err.message);
@@ -56,52 +56,50 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <button onClick={() => navigate(-1)}>← Back</button>
-      <h2>Create Account</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <br />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <br />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={handlePasswordChange}
-          required
-        />
-        {password && (
-          <p>
-            Strength: {passwordStrength}
-          </p>
-        )}
-        <br />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-        <br />
-        <button type="submit">
-          Register
-        </button>
-      </form>
+    <div className="login-page">
+      <div className="login-container">
+        <button onClick={() => navigate(-1)} className="back-button">← Back</button>
+        <h2 className="login-title">Create Account</h2>
+        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleRegister} className="login-form">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+            required
+          />
+          {password && (
+            <p className="password-strength">
+              Strength: {passwordStrength}
+            </p>
+          )}
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="login-button">
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

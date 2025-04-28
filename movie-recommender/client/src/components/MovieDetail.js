@@ -110,7 +110,7 @@ const MovieDetail = () => {
   return (
 
     <div
-      className="movie-detail-page"
+      className="movie-detail-page fade-in"
       style={{
         backgroundImage: `url(${movie.poster})`,
         backgroundSize: "cover",

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // 🔥 React Router Navigation Hook
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -23,28 +23,39 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("Login Successful!");
-      window.location.href = "/dashboard"; // ✅ Ensures a full page reload
+      window.location.href = "/dashboard";
     } catch (err) {
       setError(err.message);
     }
   };
 
-
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Login</button>
-      </form>
-      <p>
-        Don't have an account?{" "}
-        <Link to="/register" style={{ color: "blue" }}>
-          Register here
-        </Link>
-      </p>
+    <div className="login-page">
+      <div className="login-container">
+        <h2 className="login-title">Login</h2>
+        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleLogin} className="login-form">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="login-button">Login</button>
+        </form>
+        <p className="register-link">
+          Don't have an account?{" "}
+          <Link to="/register">Register here</Link>
+        </p>
+      </div>
     </div>
   );
 };

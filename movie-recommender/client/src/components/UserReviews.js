@@ -30,7 +30,7 @@ const UserReviews = () => {
   if (reviews.length === 0) return <p>You haven't written any reviews yet.</p>;
 
   return (
-    <div className="container">
+    <div className="container fade-in">
       <h2>Your Reviews</h2>
       <div className="movie-row-list">
         {reviews.map((review) => (

@@ -60,13 +60,12 @@ function Dashboard() {
   };
   return (
 
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 fade-in" >
       <div>
         <span className="text-gray-500 mr-4">Hi, {user?.username}</span>
         <button onClick={logout} className="logout-button" >Logout</button>
         <button onClick={() => navigate("/Settings")}> Customise</button>
       </div>
-      <h1 className="text-2xl font-bold">Movie Recommender</h1>
 
 
       {/* ⭐ Show Recommendations after greeting */}

@@ -3,6 +3,7 @@ const axios = require("axios");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 require("dotenv").config();
 
 const app = express();
@@ -54,26 +55,72 @@ const authenticateUser = (req, res, next) => {
 
 //  User Registration
 app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, captchaToken } = req.body;
+
+  if (!captchaToken) {
+    return res.status(400).json({ error: "Missing CAPTCHA token." });
+  }
 
   try {
+    const captchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+    const { data } = await axios.post(
+      'https://www.google.com/recaptcha/api/siteverify',
+      new URLSearchParams({
+        secret: captchaSecretKey,
+        response: captchaToken,
+      }),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      }
+    );
+
+    if (!data.success || data.action !== "register" || data.score < 0.5) {
+      console.log("Failed CAPTCHA data:", data); // <-- helpful log
+      return res.status(400).json({ error: "Failed CAPTCHA verification." });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await pool.query(
       "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email",
       [username, email, hashedPassword]
     );
+
     res.json({ message: "User registered!", user: result.rows[0] });
   } catch (error) {
-    console.error(" Registration Error:", error); // Log the actual error
-    res.status(500).json({ error: error.message || "Registration failed" });
+    console.error("Registration Error:", error.message);
+    res.status(500).json({ error: "Registration failed" });
   }
 });
 
 //  User Login
 app.post("/api/auth/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, captchaToken } = req.body;
+
+  if (!captchaToken) {
+    return res.status(400).json({ error: "Missing CAPTCHA token." });
+  }
 
   try {
+    const captchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+
+    // FIX: send URLSearchParams, set correct headers
+    const { data } = await axios.post(
+      'https://www.google.com/recaptcha/api/siteverify',
+      new URLSearchParams({
+        secret: captchaSecretKey,
+        response: captchaToken,
+      }),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      }
+    );
+
+    if (!data.success || data.action !== "login" || data.score < 0.5) {
+      console.log("Failed CAPTCHA data:", data); // helpful debug
+      return res.status(400).json({ error: "Failed CAPTCHA verification." });
+    }
+
+    // ✅ 2. Now continue with login
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
     if (user.rows.length === 0) return res.status(400).json({ error: "User not found" });
@@ -85,6 +132,7 @@ app.post("/api/auth/login", async (req, res) => {
 
     res.json({ token, user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email } });
   } catch (error) {
+    console.error("Login error:", error.message);
     res.status(500).json({ error: "Login failed" });
   }
 });

@@ -8,7 +8,6 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const [passwordStrength, setPasswordStrength] = useState(null);
-
   const navigate = useNavigate();
 
   const validatePasswordStrength = (pwd) => {
@@ -39,22 +38,33 @@ const Register = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+      await window.grecaptcha.ready(async () => {
+        const token = await window.grecaptcha.execute(
+          "6Ld3RScrAAAAAP-O9BROgXndT7EUh-OIkjxNLrc8",
+          { action: "register" }
+        );
+
+        // NOW move fetch inside here, and manually throw error if needed
+        const res = await fetch("http://localhost:5000/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password, captchaToken: token }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Registration failed");
+        }
+
+        alert("Registration successful!");
+        navigate("/login");
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Registration failed");
-
-      alert("Registration successful!");
-      navigate("/login");
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError(err.message || "Something went wrong during registration.");
     }
   };
-
   return (
     <div className="login-page">
       <div className="login-container">

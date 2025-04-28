@@ -62,7 +62,7 @@ function Dashboard() {
 
     <div className="container mx-auto p-4"><button
       onClick={() => navigate("/Settings")}
-      className="bg-green-400 text-white p-2 rounded hover:bg-green-500"
+
     >
       🎨 Customize Wallpaper
     </button>

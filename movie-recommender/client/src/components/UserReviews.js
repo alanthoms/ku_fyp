@@ -11,7 +11,7 @@ const UserReviews = () => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/myreviews", {
+        const response = await axios.get("http://localhost:5000/api/myreviews/details", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setReviews(response.data);
@@ -30,18 +30,27 @@ const UserReviews = () => {
   if (reviews.length === 0) return <p>You haven't written any reviews yet.</p>;
 
   return (
-    <div className="reviews-container">
-      <h2 className="text-2xl font-bold mb-4">📝 Your Reviews</h2>
-      <div className="review-grid">
-        {reviews.map((review, index) => (
+    <div>
+      <h2>Your Reviews</h2>
+      <div>
+        {reviews.map((review) => (
           <div
-            key={index}
-            className="review-card"
+            key={review.movie_id}
             onClick={() => navigate(`/movie/${review.movie_id}`)}
-            style={{ cursor: "pointer", border: "1px solid #ddd", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}
           >
-            <p><strong>Rating:</strong> {review.rating}/10</p>
-            <p><strong>Review:</strong> {review.review}</p>
+            {review.poster ? (
+              <img
+                src={review.poster}
+                alt={review.movie_title}
+              />
+            ) : (
+              <div>
+                <span>No Image</span>
+              </div>
+            )}
+            <h3>{review.movie_title}</h3>
+            <p>Rating: {review.rating}/10</p>
+            <p>Review: {review.review}</p>
           </div>
         ))}
       </div>

@@ -14,9 +14,12 @@ body {
   max-width: 800px;
   margin: 50px auto;
   padding: 25px;
-  background: #1e1e1e;
+  background: rgba(0, 0, 0, 0.5);
+  /* dark with 80% opacity */
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+  transition: background-color 0.5s ease;
+  /* smooth fade */
 }
 
 /* Headings */
@@ -55,6 +58,8 @@ button {
   transition: all 0.3s ease-in-out;
   outline: none;
   border: 2px solid transparent;
+  background-color: #121212;
+  color: white;
 }
 
 /* Edit and Delete buttons */
@@ -95,7 +100,7 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #232323;
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   transition: all 0.3s ease-in-out;
 }
@@ -213,6 +218,7 @@ ul {
 .movie-list {
   display: flex;
   flex-wrap: wrap;
+
   justify-content: center;
   /* Centers the items */
   gap: 16px;
@@ -222,7 +228,7 @@ ul {
 .movie-card {
   width: 23%;
   /* Approximately 4 cards per row */
-  background: #222;
+  background: rgba(0, 0, 0, 0.5);
   padding: 12px;
   border-radius: 6px;
   text-align: center;
@@ -234,19 +240,7 @@ ul {
   transform: scale(1.05);
 }
 
-.movie-card {
-  width: 160px;
-  background: #222;
-  padding: 12px;
-  border-radius: 6px;
-  text-align: center;
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
-}
 
-.movie-card:hover {
-  transform: scale(1.05);
-}
 
 .movie-poster {
   width: 100%;

@@ -6,6 +6,9 @@ const PersonalSettings = () => {
   const [backgroundColor, setBackgroundColor] = useState("");
   const token = localStorage.getItem("token");
 
+
+
+
   useEffect(() => {
     const fetchReviewCount = async () => {
       try {
@@ -18,7 +21,7 @@ const PersonalSettings = () => {
       }
     };
     fetchReviewCount();
-  }, []);
+  }, [token]);
 
   const changeBackground = async (color, requiredReviews) => {
     if (userReviewsCount < requiredReviews) {
@@ -32,7 +35,6 @@ const PersonalSettings = () => {
       document.body.style.backgroundColor = color;
       console.log("Background color updated:", document.body.style.backgroundColor);
       setBackgroundColor(color);
-      alert("Background updated!");
     } catch (error) {
       console.error("Failed to update background", error);
     }
@@ -52,26 +54,26 @@ const PersonalSettings = () => {
 
         <button
           disabled={userReviewsCount < 3}
-          className={`btn p-2 rounded ${userReviewsCount >= 3 ? "bg-blue-200" : "bg-gray-300 cursor-not-allowed"}`}
-          onClick={() => changeBackground("#add8e6", 3)}
+          className={`btn p-2 rounded ${userReviewsCount >= 3 ? "bg-[#17002B]" : "bg-gray-300 cursor-not-allowed"}`}
+          onClick={() => changeBackground("rgba(23, 0, 43, 1)", 3)}
         >
-          {userReviewsCount >= 3 ? "Light Blue (Unlocked)" : "Light Blue (3+ Reviews)"}
+          {userReviewsCount >= 3 ? "Dark Purple (Unlocked)" : "Dark Purple (3+ Reviews)"}
         </button>
 
         <button
           disabled={userReviewsCount < 5}
-          className={`btn p-2 rounded ${userReviewsCount >= 5 ? "bg-yellow-200" : "bg-gray-300 cursor-not-allowed"}`}
-          onClick={() => changeBackground("#fff8dc", 5)}
+          className={`btn p-2 rounded ${userReviewsCount >= 5 ? "bg-[#280000]" : "bg-gray-300 cursor-not-allowed"}`}
+          onClick={() => changeBackground("rgba(40, 0, 0, 1)", 5)}
         >
-          {userReviewsCount >= 5 ? "Cream Yellow (Unlocked)" : "Cream Yellow (5+ Reviews)"}
+          {userReviewsCount >= 5 ? "Dark Red (Unlocked)" : "Dark Red (5+ Reviews)"}
         </button>
 
         <button
           disabled={userReviewsCount < 10}
-          className={`btn p-2 rounded ${userReviewsCount >= 10 ? "bg-purple-300" : "bg-gray-300 cursor-not-allowed"}`}
-          onClick={() => changeBackground("#d8bfd8", 10)}
+          className={`btn p-2 rounded ${userReviewsCount >= 10 ? "bg-[#000040]" : "bg-gray-300 cursor-not-allowed"}`}
+          onClick={() => changeBackground("rgba(0, 0, 64, 1)", 10)}
         >
-          {userReviewsCount >= 10 ? "Fancy Purple (Unlocked)" : "Fancy Purple (10+ Reviews)"}
+          {userReviewsCount >= 10 ? "Dark Blue (Unlocked)" : "Dark Blue (10+ Reviews)"}
         </button>
 
       </div>

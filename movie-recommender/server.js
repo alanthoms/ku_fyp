@@ -326,6 +326,50 @@ app.get("/api/myreviews", authenticateUser, async (req, res) => {
 });
 
 
+const getReviewMovieDetails = async (review) => {
+  try {
+    const { movie_id, review: userReview, rating } = review;
+    const response = await axios.get(`http://localhost:5000/movie/${movie_id}`);
+    const movie = response.data;
+
+    return {
+      movie_id,
+      movie_title: movie.title,
+      poster: movie.poster,
+      rating,
+      review: userReview,
+    };
+  } catch (error) {
+    console.error(`❌ Error fetching movie details for movie_id ${review.movie_id}:`, error.message);
+    return {
+      movie_id: review.movie_id,
+      movie_title: "Unknown",
+      poster: null,
+      rating: review.rating,
+      review: review.review,
+    };
+  }
+};
+
+
+// ✅ Get all detailed reviews (with movie title and poster)
+app.get("/api/myreviews/details", authenticateUser, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const userReviews = await getUserReviews(userId); // basic reviews first
+
+    const detailedReviews = await Promise.all(
+      userReviews.map(getReviewMovieDetails) // enrich each review
+    );
+
+    res.json(detailedReviews); // send back enriched reviews
+  } catch (error) {
+    console.error("Error fetching detailed user reviews:", error.message);
+    res.status(500).json({ error: "Failed to fetch detailed reviews" });
+  }
+});
+
 
 // Get 3 movie recommendations based on user's reviews
 app.get("/api/recommendations", authenticateUser, async (req, res) => {
@@ -337,19 +381,12 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
 
     // 2. Fetch movie name rating and review for each movie_id
     const detailedReviews = await Promise.all(
-      userReviews.map(async (r) => {
-        const movieDetails = await axios.get(`http://localhost:5000/movie/${r.movie_id}`);
-        return {
-          title: movieDetails.data.title,
-          rating: r.rating,
-          review: r.review,
-        };
-      })
+      userReviews.map(getReviewMovieDetails)
     );
 
     // 3. Prepare text for OpenAI prompt
     const combinedReviews = detailedReviews.map(r =>
-      `Movie: '${r.title}' (Rating: ${r.rating}/10) - Review: "${r.review}"`
+      `Movie: '${r.movie_title}' (Rating: ${r.rating}/10) - Review: "${r.review}"`
     ).join("\n");
 
     // 4. Send to OpenAI

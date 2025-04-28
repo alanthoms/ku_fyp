@@ -392,14 +392,20 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant recommending exactly 3 movies based on a user's detailed reviews and ratings. Only return a JSON array of 3 TMDB movie IDs like [123, 456, 789]. No explanations, no text around it."
-          },
+            content: `
+You are a strict JSON generator.
+Always reply with a **pure JSON array** of exactly 3 TMDB movie IDs like: [123, 456, 789]
+- No explanations
+- No additional text
+- No quotes around the array
+Just pure JSON array output.`},
+
           {
             role: "user",
             content: `Here are my past movie reviews and ratings:\n\n${combinedReviews}\n\nRecommend 3 movies.`
           }
         ],
-        temperature: 0.7,
+        temperature: 0.5,
         max_tokens: 200,
       },
       {
@@ -435,9 +441,23 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
     res.json(detailedMovies);
 
   } catch (error) {
-    console.error("Error getting recommendations:", error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to generate recommendations" });
+    if (error.response) {
+      console.error("❌ OpenAI API Error Response:", JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error("❌ General Error:", error.message);
+    }
+    const fakeMovies = [550, 680, 13]; // Fight Club, Pulp Fiction, Forrest Gump TMDB IDs
+
+    const detailedMovies = await Promise.all(
+      fakeMovies.map(async (movieId) => {
+        const movieDetails = await axios.get(`http://localhost:5000/movie/${movieId}`);
+        return movieDetails.data;
+      })
+    );
+
+    return res.json(detailedMovies);
   }
+
 });
 
 

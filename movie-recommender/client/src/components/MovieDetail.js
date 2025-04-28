@@ -108,60 +108,77 @@ const MovieDetail = () => {
   if (!movie) return <p>Loading movie details...</p>;
 
   return (
-    <div>
-      <div>
-        <img src={movie.poster} alt={movie.title} />
-        <div>
-          <button onClick={handleAddToWatchlist}>Add to Watchlist</button>
-          <select value={selectedWatchlistId} onChange={(e) => setSelectedWatchlistId(e.target.value)}>
-            <option value="">-- Select Watchlist --</option>
-            {watchlists.map(watchlist => (
-              <option key={watchlist.id} value={watchlist.id}>{watchlist.name}</option>
-            ))}
-          </select>
-          <h1>{movie.title}</h1>
-          <p>{movie.year}, {movie.runtime} mins</p>
-          <p>{movie.overview}</p>
 
+    <div
+      className="movie-detail-page"
+      style={{
+        backgroundImage: `url(${movie.poster})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="movie-detail-overlay">
+        <div className="movie-detail-container">
+          <img src={movie.poster} alt={movie.title} className="movie-detail-poster" />
+          <div className="movie-detail-info">
+            <h1>{movie.title}</h1>
+            <p>{movie.year}, {movie.runtime} mins</p>
+            <p className="overview">{movie.overview}</p>
+
+            <div className="watchlist-controls">
+              <select
+                value={selectedWatchlistId}
+                onChange={(e) => setSelectedWatchlistId(e.target.value)}
+              >
+                <option value="">-- Select Watchlist --</option>
+                {watchlists.map((watchlist) => (
+                  <option key={watchlist.id} value={watchlist.id}>
+                    {watchlist.name}
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleAddToWatchlist}>Add to Watchlist</button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div>
-        {isEditing ? (
-          <>
-            <h2>Your Review</h2>
-            <p>{reviewText}</p>
-            <p>Rating: {rating}/10</p>
-            <button type="button"
-              onClick={handleDeleteReview}
-            >
-              Delete Review
-            </button>
-          </>
-        ) : (
-          <>
-            <p>You haven't written a review for this film.</p>
-            <form onSubmit={handleSubmitReview}>
-              <textarea
-                placeholder="Write your review here..."
-                value={reviewText}
-                onChange={(e) => setReviewText(e.target.value)}
-                required
-              />
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={rating}
-                onChange={(e) => setRating(parseInt(e.target.value))}
-              />
-              <button type="submit">Submit Review</button>
-            </form>
-          </>
-        )}
+        {/* Review Section */}
+        <div className="review-section">
+          {isEditing ? (
+            <>
+              <h2>Your Review</h2>
+              <p>{reviewText}</p>
+              <p>Rating: {rating}/10</p>
+              <button onClick={handleDeleteReview}>Delete Review</button>
+            </>
+          ) : (
+            <>
+              <h2>Write a Review</h2>
+              <form onSubmit={handleSubmitReview}>
+                <textarea
+                  placeholder="Write your review here..."
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  required
+                />
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={rating}
+                  onChange={(e) => setRating(parseInt(e.target.value))}
+                />
+                <button type="submit">Submit Review</button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
+
 };
 
 export default MovieDetail;

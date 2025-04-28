@@ -376,20 +376,15 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
   try {
     const userId = req.userId;
 
-    // 1. Fetch all reviews by this user
     const userReviews = await getUserReviews(userId);
-
-    // 2. Fetch movie name rating and review for each movie_id
     const detailedReviews = await Promise.all(
       userReviews.map(getReviewMovieDetails)
     );
 
-    // 3. Prepare text for OpenAI prompt
     const combinedReviews = detailedReviews.map(r =>
       `Movie: '${r.movie_title}' (Rating: ${r.rating}/10) - Review: "${r.review}"`
     ).join("\n");
 
-    // 4. Send to OpenAI
     const aiResponse = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -415,9 +410,21 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
       }
     );
 
-    const recommendedIds = JSON.parse(aiResponse.data.choices[0].message.content);
+    const aiText = aiResponse.data.choices[0].message.content;
+    console.log("AI raw output:", aiText);
 
-    // 5. Fetch full movie details
+    let recommendedIds;
+    try {
+      recommendedIds = JSON.parse(aiText);
+
+      if (!Array.isArray(recommendedIds) || recommendedIds.length !== 3 || !recommendedIds.every(id => typeof id === 'number')) {
+        throw new Error("AI did not return a valid array of 3 movie IDs.");
+      }
+    } catch (jsonError) {
+      console.error("❌ Failed to parse AI response or wrong format:", aiText);
+      return res.status(500).json({ error: "Invalid recommendation format from AI." });
+    }
+
     const detailedMovies = await Promise.all(
       recommendedIds.map(async (movieId) => {
         const movieDetails = await axios.get(`http://localhost:5000/movie/${movieId}`);
@@ -428,7 +435,7 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
     res.json(detailedMovies);
 
   } catch (error) {
-    console.error("Error getting recommendations:", error.message);
+    console.error("Error getting recommendations:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to generate recommendations" });
   }
 });

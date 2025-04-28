@@ -242,11 +242,13 @@ ul {
 
 
 
-.movie-poster {
-  width: 100%;
+.movie-detail-poster {
+  width: 300px;
   height: auto;
-  border-radius: 5px;
+  border-radius: 8px;
+  object-fit: cover;
 }
+
 
 .no-poster {
   width: 100%;
@@ -381,5 +383,171 @@ body {
 
 .movie-text {
   flex: 1;
+  text-align: left;
+}
+
+.movie-detail-container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  background: rgba(18, 18, 18, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+.movie-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.movie-poster {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+
+.movie-info {
+  flex: 1;
+  text-align: left;
+}
+
+.movie-info h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.movie-info p {
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+.watchlist-controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.watchlist-controls select,
+.watchlist-controls button {
+  padding: 10px;
+  background: #252525;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.watchlist-controls button {
+  background-color: #00bcd4;
+  border: none;
+}
+
+.watchlist-controls button:hover {
+  background-color: #008c9e;
+}
+
+.movie-review-section {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.movie-review-section h2 {
+  margin-bottom: 15px;
+}
+
+.movie-review-section textarea {
+  width: 100%;
+  padding: 12px;
+  background: #252525;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 6px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.movie-review-section input[type="number"] {
+  width: 80px;
+  padding: 10px;
+  margin-right: 10px;
+  background: #252525;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 6px;
+}
+
+.movie-review-section button {
+  padding: 10px 18px;
+  background-color: #00bcd4;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.movie-review-section button:hover {
+  background-color: #008c9e;
+}
+
+
+.movie-detail-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.8);
+  background-blend-mode: darken;
+  padding: 30px;
+}
+
+.movie-detail-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.movie-detail-container {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.movie-detail-poster {
+  width: 250px;
+  border-radius: 10px;
+}
+
+.movie-detail-info {
+  flex: 1;
+  text-align: left;
+}
+
+.movie-detail-info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.overview {
+  margin-top: 20px;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+.watchlist-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.review-section {
+  margin-top: 50px;
   text-align: left;
 }

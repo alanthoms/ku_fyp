@@ -288,22 +288,20 @@ ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #232323;
+  background: rgba(0, 0, 0, 0.5);
   padding: 12px;
   border-radius: 8px;
-  transition: background 0.3s ease-in-out;
+  border: 1px solid transparent;
+  /* initially no visible border */
+  transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
   cursor: pointer;
 }
 
 .movie-row:hover {
-  background: #2c2c2c;
+  border: 1px solid white;
+  /* clear white border on hover */
 }
 
-.movie-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
 
 .movie-row-poster {
   width: 60px;
@@ -319,51 +317,15 @@ ul {
   margin: 0;
 }
 
-.tick-placeholder {
-  display: flex;
-  align-items: center;
-}
 
-.movie-row-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
 
-.movie-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #232323;
-  padding: 12px;
-  border-radius: 8px;
-  transition: background 0.3s ease-in-out;
-  cursor: pointer;
-}
 
 .movie-row:hover {
   background: #2c2c2c;
 }
 
-.movie-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
 
-.movie-row-poster {
-  width: 60px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 5px;
-}
 
-.movie-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin: 0;
-}
 
 .tick-checkbox {
   width: 24px;
@@ -408,4 +370,16 @@ body.fancy-purple-bg {
 
 body {
   transition: background-color 0.5s ease;
+}
+
+.movie-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.movie-text {
+  flex: 1;
+  text-align: left;
 }

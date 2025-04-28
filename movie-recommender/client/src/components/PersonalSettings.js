@@ -47,7 +47,7 @@ const PersonalSettings = () => {
 
         <button
           className="btn bg-gray-200 p-2 rounded"
-          onClick={() => changeBackground("#ffffff", 0)}
+          onClick={() => changeBackground("#121212", 0)}
         >
           Default (Unlocked)
         </button>

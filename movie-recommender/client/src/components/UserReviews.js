@@ -30,27 +30,34 @@ const UserReviews = () => {
   if (reviews.length === 0) return <p>You haven't written any reviews yet.</p>;
 
   return (
-    <div>
+    <div className="container">
       <h2>Your Reviews</h2>
-      <div>
+      <div className="movie-row-list">
         {reviews.map((review) => (
           <div
             key={review.movie_id}
+            className="movie-row"
             onClick={() => navigate(`/movie/${review.movie_id}`)}
+            style={{ cursor: 'pointer' }} // Makes it clear it's clickable
           >
-            {review.poster ? (
-              <img
-                src={review.poster}
-                alt={review.movie_title}
-              />
-            ) : (
-              <div>
-                <span>No Image</span>
+            <div className="movie-info">
+              {review.poster ? (
+                <img
+                  src={review.poster}
+                  alt={review.movie_title}
+                  className="movie-row-poster"
+                />
+              ) : (
+                <div className="no-poster">
+                  <span>No Image</span>
+                </div>
+              )}
+              <div className="movie-text">
+                <h3 className="movie-title">{review.movie_title}</h3>
+                <p>Rating: {review.rating}/10</p>
+                <p>Review: {review.review}</p>
               </div>
-            )}
-            <h3>{review.movie_title}</h3>
-            <p>Rating: {review.rating}/10</p>
-            <p>Review: {review.review}</p>
+            </div>
           </div>
         ))}
       </div>

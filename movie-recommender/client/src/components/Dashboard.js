@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import MovieRecommendations from "./MovieRecommendations";
-import Watchlists from "./Watchlists"; // ✅ Import the Watchlists component
-import CreateWatchlist from "./CreateWatchlist"; // ✅ Import the form component
+import Watchlists from "./Watchlists"; //  Import the Watchlists component
+import CreateWatchlist from "./CreateWatchlist"; //  Import the form component
 import MovieDetail from "./MovieDetail";
 import Recommendations from "./Recommendations";
 import UserReviews from "./UserReviews";
-import PersonalSettings from "./PersonalSettings"; // ✅ Import the PersonalSettings component
+import PersonalSettings from "./PersonalSettings"; // Import the PersonalSettings component
 //<Route path="/movie/:movieId" element={<MovieDetail />} />
 
 //
@@ -49,7 +49,7 @@ function Dashboard() {
     };
     console.log(document.body.style.backgroundColor);
     fetchUserSettings();
-  }, []); // ✅ run once on Dashboard load
+  }, []); //  run once on Dashboard load
 
   const handleViewReviews = () => {
     navigate("/user-reviews");// naviagate to UserReviews page
@@ -68,7 +68,7 @@ function Dashboard() {
       </div>
 
 
-      {/* ⭐ Show Recommendations after greeting */}
+      {/*  Show Recommendations after greeting */}
       <Recommendations />
 
       <button
@@ -77,14 +77,14 @@ function Dashboard() {
       >
         View My Reviews
       </button>
-      {/* ✅ Watchlists Component */}
+      {/*  Watchlists Component */}
       <Watchlists />
 
-      {/* ✅ Create Watchlist Form */}
+      {/* Create Watchlist Form */}
       <CreateWatchlist />
 
 
-      {/* ✅ Pass onMovieSelect as a prop */}
+      {/*  Pass onMovieSelect as a prop */}
       <MovieSearch onMovieSelect={setSelectedMovie} />
 
     </div>

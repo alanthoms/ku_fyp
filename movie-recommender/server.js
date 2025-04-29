@@ -174,7 +174,7 @@ app.post("/api/watchlists", authenticateUser, async (req, res) => {
     );
     res.json({ message: "Watchlist created!", watchlist: result.rows[0] });
   } catch (error) {
-    console.error("❌ Error creating watchlist:", error.message); // Log the error message
+    console.error(" Error creating watchlist:", error.message); // Log the error message
     res.status(500).json({ error: "Failed to create watchlist" });
   }
 });
@@ -204,7 +204,7 @@ app.post("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, re
   }
 });
 
-// ✅ Get movies in a watchlist
+//  Get movies in a watchlist
 app.get("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, res) => {
   try {
     const movies = await pool.query(
@@ -325,7 +325,7 @@ app.get("/movie/:movieId", async (req, res) => {
       poster: movie.poster_path ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : null,
     });
   } catch (error) {
-    console.error("❌ Error fetching movie details:", error.message);
+    console.error(" Error fetching movie details:", error.message);
     res.status(500).json({ error: "Error fetching movie details" });
   }
 });
@@ -347,7 +347,7 @@ app.put("/api/watchlists/:watchlistId/movies/:movieId/tick", authenticateUser, a
 
 //  Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
 
 
 // Helper function to get user's reviews
@@ -388,7 +388,7 @@ const getReviewMovieDetails = async (review) => {
       review: userReview,
     };
   } catch (error) {
-    console.error(`❌ Error fetching movie details for movie_id ${review.movie_id}:`, error.message);
+    console.error(` Error fetching movie details for movie_id ${review.movie_id}:`, error.message);
     return {
       movie_id: review.movie_id,
       movie_title: "Unknown",
@@ -476,7 +476,7 @@ Just pure JSON array output.`},
         throw new Error("AI did not return a valid array of 3 movie IDs.");
       }
     } catch (jsonError) {
-      console.error("❌ Failed to parse AI response or wrong format:", aiText);
+      console.error(" Failed to parse AI response or wrong format:", aiText);
       return res.status(500).json({ error: "Invalid recommendation format from AI." });
     }
 

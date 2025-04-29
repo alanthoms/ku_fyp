@@ -20,6 +20,7 @@ const MovieDetail = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
+        // Fetch movie details and user reviews
         const movieResponse = await axios.get(`http://localhost:5000/movie/${movieId}`);
         const reviewsResponse = await axios.get(`http://localhost:5000/api/reviews/${movieId}`);
         const watchlistsResponse = await axios.get("http://localhost:5000/api/watchlists", {
@@ -59,7 +60,7 @@ const MovieDetail = () => {
         { movieId: movie.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("🎥 Movie added to watchlist!");
+      alert("Movie added to watchlist!");
     } catch (error) {
       console.error("Failed to add to watchlist", error);
       alert("Failed to add movie to watchlist!");
@@ -88,13 +89,11 @@ const MovieDetail = () => {
   };
 
   const handleDeleteReview = async () => {
-    //const confirmDelete = window.confirm("Are you sure you want to delete your review?");
-    //if (!confirmDelete) return;  // If the user cancels, stop.
-
     try {
       await axios.delete(`http://localhost:5000/api/reviews/${userReview.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      // Reset state after deletion
       alert("Review deleted!");
       setUserReview(null);
       setIsEditing(false);

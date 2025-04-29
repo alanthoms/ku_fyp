@@ -103,7 +103,7 @@ app.post("/api/auth/login", async (req, res) => {
   try {
     const captchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
 
-    // FIX: send URLSearchParams, set correct headers
+    // send URLSearchParams, set correct headers
     const { data } = await axios.post(
       'https://www.google.com/recaptcha/api/siteverify',
       new URLSearchParams({
@@ -120,7 +120,7 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(400).json({ error: "Failed CAPTCHA verification." });
     }
 
-    // ✅ 2. Now continue with login
+    //  Now continue with login
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
     if (user.rows.length === 0) return res.status(400).json({ error: "User not found" });
@@ -137,7 +137,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// ✅ Add a new review
+//  Add a new review
 //post cause adding, request and response, async to wait for the database to respond
 app.post("/api/reviews", authenticateUser, async (req, res) => {
   const { movieId, review, rating } = req.body;
@@ -163,7 +163,7 @@ app.get("/api/reviews/:movieId", async (req, res) => {
   }
 });
 
-// ✅ Create a new watchlist
+//  Create a new watchlist
 app.post("/api/watchlists", authenticateUser, async (req, res) => {
   const { name } = req.body;
   try {
@@ -190,7 +190,7 @@ app.get("/api/watchlists", authenticateUser, async (req, res) => {
   }
 });
 
-// ✅ Add movie to a watchlist
+//  Add movie to a watchlist
 app.post("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, res) => {
   const { movieId } = req.body;
   try {
@@ -218,7 +218,7 @@ app.get("/api/watchlists/:watchlistId/movies", authenticateUser, async (req, res
 });
 
 
-// ✅ Update an existing watchlist
+// Update an existing watchlist
 app.put("/api/watchlists/:id", authenticateUser, async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
@@ -287,7 +287,7 @@ app.get("/search/:movie", async (req, res) => {
   }
 });
 
-// ✅ Movie recommendation endpoint
+//  Movie recommendation endpoint
 app.get("/recommend/:movieId", async (req, res) => {
   const movieId = req.params.movieId;
   try {
@@ -307,7 +307,7 @@ app.get("/recommend/:movieId", async (req, res) => {
   }
 });
 
-// ✅ Movie detail endpoint
+//  Movie detail endpoint
 app.get("/movie/:movieId", async (req, res) => {
   const { movieId } = req.params;
   try {
@@ -330,7 +330,7 @@ app.get("/movie/:movieId", async (req, res) => {
   }
 });
 
-// ✅ Toggle tick for a movie
+//  Toggle tick for a movie
 app.put("/api/watchlists/:watchlistId/movies/:movieId/tick", authenticateUser, async (req, res) => {
   const { watchlistId, movieId } = req.params;
   const { ticked } = req.body;
@@ -345,7 +345,7 @@ app.put("/api/watchlists/:watchlistId/movies/:movieId/tick", authenticateUser, a
   }
 });
 
-// ✅ Start Server
+//  Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
@@ -400,7 +400,7 @@ const getReviewMovieDetails = async (review) => {
 };
 
 
-// ✅ Get all detailed reviews (with movie title and poster)
+//  Get all detailed reviews (with movie title and poster)
 app.get("/api/myreviews/details", authenticateUser, async (req, res) => {
   try {
     const userId = req.userId;
@@ -442,10 +442,11 @@ app.get("/api/recommendations", authenticateUser, async (req, res) => {
             role: "system",
             content: `
 You are a strict JSON generator.
-Always reply with a **pure JSON array** of exactly 3 TMDB movie IDs like: [123, 456, 789]
+Always reply with a **pure JSON array** of exactly 3 recommended TMDB movie IDs like: [123, 456, 789]
 - No explanations
 - No additional text
 - No quotes around the array
+- No films from the reviews provided
 Just pure JSON array output.`},
 
           {
@@ -490,9 +491,9 @@ Just pure JSON array output.`},
 
   } catch (error) {
     if (error.response) {
-      console.error("❌ OpenAI API Error Response:", JSON.stringify(error.response.data, null, 2));
+      console.error("OpenAI API Error Response:", JSON.stringify(error.response.data, null, 2));
     } else {
-      console.error("❌ General Error:", error.message);
+      console.error("General Error:", error.message);
     }
     const fakeMovies = [550, 680, 13]; // Fight Club, Pulp Fiction, Forrest Gump TMDB IDs
 

@@ -4,9 +4,9 @@ import axios from 'axios';
 
 const EditWatchlist = ({ watchlist }) => {
   const [movies, setMovies] = useState([]);
-  const [tickedMovies, setTickedMovies] = useState(new Set());
   const navigate = useNavigate();
 
+  const tickSound = new Audio('../ding.mp3');
   const openModal = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -46,6 +46,7 @@ const EditWatchlist = ({ watchlist }) => {
       setMovies(prevMovies =>
         prevMovies.map(m => m.id === movieId ? { ...m, ticked: newTickedState } : m)
       );
+      tickSound.play();
     } catch (err) {
       console.error("Failed to update ticked status:", err.message);
     }

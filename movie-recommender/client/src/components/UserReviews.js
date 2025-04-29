@@ -38,7 +38,7 @@ const UserReviews = () => {
             key={review.movie_id}
             className="movie-row"
             onClick={() => navigate(`/movie/${review.movie_id}`)}
-            style={{ cursor: 'pointer' }} // Makes it clear it's clickable
+            style={{ cursor: 'pointer' }} // Makes it clear its clickable
           >
             <div className="movie-info">
               {review.poster ? (
